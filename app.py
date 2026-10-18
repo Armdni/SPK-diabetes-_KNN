@@ -19,33 +19,42 @@ DATA = pd.DataFrame(
     columns=["Pasien"] + FITUR + ["Kelas"],
 )
 
+WARNA_UTAMA = "#0f766e"
 WARNA_TINGGI = "#e5484d"
 WARNA_RENDAH = "#30a46c"
-WARNA_UTAMA = "#0f766e"
 
-CSS = f"""
+# Tombol Prediksi: ubah angka di bawah untuk mengatur tampilan tombol.
+# TRANSPARANSI_TOMBOL: 0.05 (sangat transparan) sampai 1 (pekat)
+# LEBAR_TOMBOL: 100% = selebar kartu, 70% = lebih pendek
+TRANSPARANSI_TOMBOL = 0.15
+LEBAR_TOMBOL = "100%"
+
+CSS_MENTAH = """
 <style>
-.block-container {{ max-width: 720px; padding-top: 5rem; padding-bottom: 3rem; }}
-#MainMenu, footer {{ visibility: hidden; }}
-.judul {{ font-size: 1.8rem; font-weight: 700; line-height: 1.25; margin: 0; }}
-.subjudul {{ opacity: 0.7; margin: 0.25rem 0 1.25rem 0; }}
-div[data-testid="stForm"] {{ border-radius: 16px; padding: 1.25rem; }}
-[data-testid="stFormSubmitButton"] button {{
-    width: 100%; border-radius: 12px; font-weight: 600; padding: 0.65rem 0;
-    background-color: {WARNA_UTAMA}; border: none; color: #fff;
-}}
-[data-testid="stFormSubmitButton"] button:hover {{ background-color: #115e59; color: #fff; }}
-.hasil {{ border-radius: 16px; padding: 1.1rem 1.25rem; margin: 0.5rem 0 1rem 0; }}
-.hasil .label {{ font-size: 0.85rem; opacity: 0.75; }}
-.hasil .nilai {{ font-size: 1.9rem; font-weight: 700; line-height: 1.2; }}
-.hasil .ket {{ margin-top: 0.4rem; opacity: 0.9; }}
-.bar {{ display: flex; height: 34px; border-radius: 10px; overflow: hidden; margin-bottom: 0.4rem; }}
-.bar div {{
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 0.85rem; font-weight: 600; white-space: nowrap;
-}}
+.block-container { max-width: 720px; padding-top: 5rem; padding-bottom: 3rem; }
+#MainMenu, footer { visibility: hidden; }
+.judul { font-size: 1.8rem; font-weight: 700; line-height: 1.25; margin: 0; }
+.subjudul { opacity: 0.7; margin: 0.25rem 0 1.25rem 0; }
+div[data-testid="stForm"] { border-radius: 16px; padding: 1.25rem; }
+[data-testid="stFormSubmitButton"] { width: __LEBAR__ !important; }
+.stElementContainer:has([data-testid="stFormSubmitButton"]) { width: 100% !important; }
+[data-testid="stFormSubmitButton"] button { width: 100% !important; border-radius: 14px; padding: 0.85rem 1.5rem; background-color: rgba(15, 118, 110, __ALFA__) !important; border: 1.5px solid rgba(15, 118, 110, 0.5) !important; }
+[data-testid="stFormSubmitButton"] button, [data-testid="stFormSubmitButton"] button * { color: __UTAMA__ !important; font-weight: 600; }
+[data-testid="stFormSubmitButton"] button:hover { background-color: rgba(15, 118, 110, 0.28) !important; border-color: __UTAMA__ !important; }
+[data-testid="stFormSubmitButton"] button:focus { box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.3) !important; }
+.hasil { border-radius: 16px; padding: 1.1rem 1.25rem; margin: 0.5rem 0 1rem 0; }
+.hasil .label { font-size: 0.85rem; opacity: 0.75; }
+.hasil .nilai { font-size: 1.9rem; font-weight: 700; line-height: 1.2; }
+.hasil .ket { margin-top: 0.4rem; opacity: 0.9; }
+.bar { display: flex; height: 34px; border-radius: 10px; overflow: hidden; margin-bottom: 0.4rem; }
+.bar div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
 </style>
 """
+CSS = (
+    CSS_MENTAH.replace("__UTAMA__", WARNA_UTAMA)
+    .replace("__ALFA__", str(TRANSPARANSI_TOMBOL))
+    .replace("__LEBAR__", LEBAR_TOMBOL)
+)
 
 
 def hitung_knn(data_baru, k, normalisasi=False):
@@ -127,7 +136,9 @@ def main():
     st.markdown(
         '<p class="judul">📊 Prediksi Risiko Diabetes</p>'
         '<p class="subjudul">Sistem pendukung keputusan berbasis '
-        "K-Nearest Neighbors (KNN)</p>",
+        "K-Nearest Neighbors (KNN)</p>"
+        '<p class="subjudul">Masukkan data baru, lalu sistem menilai '
+        "risikonya dari kasus yang paling mirip (KNN)</p>",
         unsafe_allow_html=True,
     )
 
@@ -163,7 +174,7 @@ def main():
         st.markdown(f"**{k} tetangga terdekat**")
         st.dataframe(tabel_berwarna(hasil.head(k)), hide_index=True)
 
-        with st.expander("Jarak ke seluruh data"):
+        with st.expander("Jarak ke seluruh data latih"):
             lengkap = hasil.copy()
             lengkap["Dipakai"] = ["Ya" if i < k else "-" for i in range(len(lengkap))]
             st.dataframe(tabel_berwarna(lengkap), hide_index=True)
@@ -178,7 +189,7 @@ def main():
         )
 
     st.caption(
-        "Aplikasi ini hanya untuk latihan pembelajaran, bukan alat diagnosis klinis."
+        "Simulasi bertujuan untuk mempelajari sistem pendukung keputusan risiko diabetes dengan metode KNN."
     )
 
 
