@@ -137,8 +137,8 @@ def main():
         '<p class="judul">📊 Prediksi Risiko Diabetes</p>'
         '<p class="subjudul">Sistem pendukung keputusan berbasis '
         "K-Nearest Neighbors (KNN)</p>"
-        '<p class="subjudul">Masukkan data baru, lalu sistem menilai '
-        "risikonya dari kasus yang paling mirip (KNN)</p>",
+        '<p class="subjudul">Masukkan data baru, lalu sistem akan '
+        "menilai risikonya dari kasus yang paling mirip.</p>",
         unsafe_allow_html=True,
     )
 
