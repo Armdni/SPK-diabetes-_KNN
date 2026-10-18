@@ -174,18 +174,18 @@ def main():
         st.markdown(f"**{k} tetangga terdekat**")
         st.dataframe(tabel_berwarna(hasil.head(k)), hide_index=True)
 
-        with st.expander("Jarak ke seluruh data latih"):
+        with st.expander("Jarak ke seluruh data"):
             lengkap = hasil.copy()
             lengkap["Dipakai"] = ["Ya" if i < k else "-" for i in range(len(lengkap))]
             st.dataframe(tabel_berwarna(lengkap), hide_index=True)
 
     with st.expander("Tentang model"):
         st.write(
-            "Data latih terdiri dari 10 pasien (5 Rendah dan 5 Tinggi). "
+            "Data terdiri dari 10 pasien (5 Rendah dan 5 Tinggi). "
             "Jarak dihitung dengan rumus Euclidean kuadrat pada lima atribut: "
             "Usia, BMI, Glukosa, Tekanan darah, dan Riwayat keluarga. "
-            "Kelas pasien baru ditentukan lewat voting mayoritas dari K "
-            "tetangga terdekat."
+            "Kelas (target klasifikasi) pasien baru ditentukan lewat voting mayoritas dari K "
+            "atau tetangga terdekat."
         )
 
     st.caption(
